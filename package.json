@@ -1,6 +1,6 @@
 {
   "name": "react-matchmedia-connect",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Higher order component for matchMedia",
   "main": "lib/index.js",
   "scripts": {
@@ -18,10 +18,13 @@
     "url": "https://github.com/malte-wessel/react-matchmedia-connect.git"
   },
   "keywords": [
+    "matchmedia",
     "media queries",
     "responsive",
-    "higher order component",
-    "react"
+    "react",
+    "react-component",
+    "redux",
+    "recompose"
   ],
   "author": "Malte Wessel",
   "license": "MIT",
