@@ -1,7 +1,7 @@
 {
   "name": "react-matchmedia-connect",
-  "version": "3.0.0",
-  "description": "Higher order component for media queries",
+  "version": "0.1.0",
+  "description": "Higher order component for match media",
   "main": "lib/index.js",
   "scripts": {
     "clean": "rimraf lib dist",
@@ -44,7 +44,7 @@
     "eslint-plugin-react": "^3.5.1",
     "expect": "^1.6.0",
     "isparta-loader": "^2.0.0",
-    "karma": "^0.13.10",
+    "karma": "0.13.19",
     "karma-chrome-launcher": "^0.2.1",
     "karma-cli": "^0.1.1",
     "karma-coverage": "^0.5.3",
