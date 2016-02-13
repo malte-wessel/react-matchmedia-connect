@@ -1,7 +1,7 @@
 {
   "name": "react-matchmedia-connect",
   "version": "0.1.0",
-  "description": "Higher order component for match media",
+  "description": "Higher order component for matchMedia",
   "main": "lib/index.js",
   "scripts": {
     "clean": "rimraf lib dist",
