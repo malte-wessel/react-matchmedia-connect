@@ -1,0 +1,48 @@
+import createMatchMediaConnect from './createMatchMediaConnect';
+
+function capitalize(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+const defaultBreakpoints = {
+    xs: 480,
+    sm: 768,
+    md: 992,
+    lg: 1200,
+    xlg: 1600
+};
+
+export default function createResponsiveConnect(breakpoints = defaultBreakpoints) {
+    const breakpointsList = [];
+    const queryMap = {
+        isPortrait: '(orientation: portrait)',
+        isLandscape: '(orientation: landscape)'
+    };
+
+    for (const key in breakpoints) {
+        if (!breakpoints.hasOwnProperty(key)) continue;
+        const value = breakpoints[key];
+        breakpointsList.push({ key, value });
+    }
+
+    // Make sure breakpoints are ordered by value ASC
+    breakpointsList.sort(({ value: a }, { value: b }) => a - b);
+
+    breakpointsList.forEach((breakpoint, idx) => {
+        const { key } = breakpoint;
+        const capitalizedKey = capitalize(key);
+        if (idx > 0) {
+            const { value: width } = breakpoint;
+            const minWidthKey = `isMin${capitalizedKey}`;
+            queryMap[minWidthKey] = `(min-width: ${width}px)`;
+        }
+        const nextBreakpoint = breakpointsList[idx + 1];
+        if (nextBreakpoint) {
+            const { value: nextWidth } = nextBreakpoint;
+            const maxWidthKey = `isMax${capitalizedKey}`;
+            queryMap[maxWidthKey] = `(max-width: ${nextWidth - 1}px)`;
+        }
+    });
+
+    return createMatchMediaConnect(queryMap);
+}
