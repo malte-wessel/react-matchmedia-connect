@@ -1,15 +1,11 @@
 import createMatchMediaConnect from './createMatchMediaConnect';
-
-function capitalize(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
+import capitalize from './utils/capitalize';
 
 const defaultBreakpoints = {
     xs: 480,
     sm: 768,
     md: 992,
-    lg: 1200,
-    xlg: 1600
+    lg: 1200
 };
 
 export default function createResponsiveConnect(breakpoints = defaultBreakpoints) {
@@ -31,12 +27,14 @@ export default function createResponsiveConnect(breakpoints = defaultBreakpoints
     breakpointsList.forEach((breakpoint, idx) => {
         const { key } = breakpoint;
         const capitalizedKey = capitalize(key);
+        // Skip min-width query for first element
         if (idx > 0) {
             const { value: width } = breakpoint;
             const minWidthKey = `isMin${capitalizedKey}`;
             queryMap[minWidthKey] = `(min-width: ${width}px)`;
         }
         const nextBreakpoint = breakpointsList[idx + 1];
+        // Skip max-width query for last element
         if (nextBreakpoint) {
             const { value: nextWidth } = nextBreakpoint;
             const maxWidthKey = `isMax${capitalizedKey}`;
