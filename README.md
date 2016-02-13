@@ -1,20 +1,14 @@
 react-matchmedia-connect
 =========================
 
-[![npm](https://img.shields.io/badge/npm-react--custom--scrollbars-brightgreen.svg?style=flat-square)]()
+[![npm](https://img.shields.io/badge/npm-react--matchmedia--connect-brightgreen.svg?style=flat-square)]()
 [![npm version](https://img.shields.io/npm/v/react-matchmedia-connect.svg?style=flat-square)](https://www.npmjs.com/package/react-matchmedia-connect)
 [![npm downloads](https://img.shields.io/npm/dm/react-matchmedia-connect.svg?style=flat-square)](https://www.npmjs.com/package/react-matchmedia-connect)
 
-* frictionless native browser scrolling
-* native scrollbars for mobile devices
-* [fully customizable](https://github.com/malte-wessel/react-matchmedia-connect/blob/master/docs/customization.md)
-* [auto hide](https://github.com/malte-wessel/react-matchmedia-connect/blob/master/docs/usage.md#auto-hide)
-* [universal](https://github.com/malte-wessel/react-matchmedia-connect/blob/master/docs/usage.md#universal-rendering) (runs on client & server)
-* `requestAnimationFrame` for 60fps
-* no extra stylesheets
-* well tested, 100% code coverage
+* Higher order components for `matchMedia`
+* Receive props that indicate whether your media queries match
 
-**[Examples](http://malte-wessel.github.io/react-matchmedia-connect/) · [Documentation](https://github.com/malte-wessel/react-matchmedia-connect/tree/master/docs)**
+**[Examples](http://malte-wessel.github.io/react-matchmedia-connect/)**
 
 ## Installation
 ```bash
@@ -22,53 +16,43 @@ npm install react-matchmedia-connect --save
 ```
 
 ## Usage
-
-This is the minimal configuration. [Check out the Documentation for advanced usage](https://github.com/malte-wessel/react-matchmedia-connect/tree/master/docs).
-
+### createMatchMediaConnect
 ```javascript
-import { Scrollbars } from 'react-matchmedia-connect';
-
-class App extends Component {
-  render() {
-    return (
-      <Scrollbars style={{ width: 500, height: 300 }}>
-        <p>Some great content...</p>
-      </Scrollbars>
-    );
-  }
-}
+import { createMatchMediaConnect } from 'react-matchmedia-connect';
+const connect = createMatchMediaConnect({
+  isLandscape: '(orientation: landscape)',
+  isMin400: '(min-width: 400px)'
+});
+const Component = ({ isLandscape, isMin400 }) => (
+  <div>
+    <div>{isLandscape ? 'landscape' : 'portrait'}</div>
+    <div>{isMin400 ? 'at least 400' : 'less than 400'}</div>
+  </div>
+);
+const wrapWithConnect = connect();
+const ConnectedComponent = wrapWithConnect(Component);
 ```
 
-The `<Scrollbars>` component is completely customizable. Check out the following code:
-
+### createResponsiveConnect
 ```javascript
-import { Scrollbars } from 'react-matchmedia-connect';
-
-class CustomScrollbars extends Component {
-  render() {
-    return (
-      <Scrollbars
-        onScroll={this.handleScroll}
-        onScrollFrame={this.handleScrollFrame}
-        onScrollStart={this.handleScrollStart}
-        onScrollStop={this.handleScrollStop}
-        renderView={this.renderView}
-        renderTrackHorizontal={this.renderTrackHorizontal}
-        renderTrackVertical={this.renderTrackVertical}
-        renderThumbHorizontal={this.renderThumbHorizontal}
-        renderThumbVertical={this.renderThumbVertical}
-        autoHide={true}
-        autoHideTimeout={1000}
-        autoHideDuration={200}
-        thumbMinSize={30}
-        universal={true}
-        {...this.props}>
-    );
-  }
-}
+import { createResponsiveConnect } from 'react-matchmedia-connect';
+const connect = createResponsiveConnect({
+  xs: 480,
+  sm: 768,
+  md: 992,
+  lg: 1200
+});
+const Component = ({ isMinMd, isMaxMd }) => (
+  <div>
+    <div>{isMinMd ? 'greater than 992px' : 'less than 992px'}</div>
+    <div>{isMaxMd ? 'not greater than 1199px' : 'greater than 1199px'}</div>
+    <div>{isMinMd && isMaxMd ? 'between 992px and 1199px' : 'other'}</div>
+  </div>
+);
+// Only connect to `isMinMd` and `isMaxMd`
+const wrapWithConnect = connect(['isMinMd', 'isMaxMd']);
+const ConnectedComponent = wrapWithConnect(Component);
 ```
-
-All properties are documented in the [API docs](https://github.com/malte-wessel/react-matchmedia-connect/blob/master/docs/API.md)
 
 ## Examples
 
@@ -95,7 +79,6 @@ npm test
 # Run code coverage. Results can be found in `./coverage`
 npm run test:cov
 ```
-
 
 ## License
 
