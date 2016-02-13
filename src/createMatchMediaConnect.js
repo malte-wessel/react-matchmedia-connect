@@ -41,9 +41,19 @@ export default function createMatchMediaConnect(queryMap = {}) {
         mqls[key] = mql;
     }
 
+    function destroy() {
+        listeners.length = 0;
+        for (const key in mqls) {
+            if (!mqls.hasOwnProperty(key)) continue;
+            const mql = mqls[key];
+            mql.removeListener(handleChange);
+            mqls[key] = undefined;
+        }
+    }
+
     prevState = createState();
 
-    return Component => createClass({
+    const connect = Component => createClass({
         displayName: 'MatchMediaConnect',
         getInitialState() {
             return prevState;
@@ -61,4 +71,7 @@ export default function createMatchMediaConnect(queryMap = {}) {
             return <Component {...this.props} {...this.state}/>;
         }
     });
+
+    connect.destroy = destroy;
+    return connect;
 }
