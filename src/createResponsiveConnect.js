@@ -11,8 +11,8 @@ const defaultBreakpoints = {
 export default function createResponsiveConnect(breakpoints = defaultBreakpoints) {
     const breakpointsList = [];
     const queryMap = {
-        isPortrait: '(orientation: portrait)',
-        isLandscape: '(orientation: landscape)'
+        isLandscape: '(orientation: landscape)',
+        isPortrait: '(orientation: portrait)'
     };
 
     for (const key in breakpoints) {

@@ -3,7 +3,8 @@ import shallowEqual from './utils/shallowEqual';
 import throttle from './utils/throttle';
 import pick from './utils/pick';
 
-export default function createMatchMediaConnect(queryMap = {}) {
+export default function createMatchMediaConnect(queryMap = {}, options = {}) {
+    const { matchMediaFn = window.matchMedia } = options;
     const mqls = {};
     const listeners = [];
     let state = {};
@@ -30,16 +31,18 @@ export default function createMatchMediaConnect(queryMap = {}) {
     const handleChange = throttle(() => {
         const nextState = createState();
         if (shallowEqual(state, nextState)) return;
-        listeners.forEach(listener => listener(nextState));
         state = nextState;
+        listeners.forEach(listener => listener(nextState));
     });
 
-    for (const key in queryMap) {
-        if (!queryMap.hasOwnProperty(key)) continue;
-        const query = queryMap[key];
-        const mql = matchMedia(query);
-        mql.addListener(handleChange);
-        mqls[key] = mql;
+    if (matchMediaFn) {
+        for (const key in queryMap) {
+            if (!queryMap.hasOwnProperty(key)) continue;
+            const query = queryMap[key];
+            const mql = matchMediaFn(query);
+            mql.addListener(handleChange);
+            mqls[key] = mql;
+        }
     }
 
     function destroy() {
@@ -68,7 +71,7 @@ export default function createMatchMediaConnect(queryMap = {}) {
                 componentDidMount() {
                     this.unsubscribe = subscribe(this.handleChange);
                 },
-                componenWillUnmount() {
+                componentWillUnmount() {
                     this.unsubscribe();
                 },
                 handleChange(nextState) {
@@ -83,6 +86,8 @@ export default function createMatchMediaConnect(queryMap = {}) {
         };
     }
 
+    // For testing
     connect.destroy = destroy;
+    connect.listeners = listeners;
     return connect;
 }
