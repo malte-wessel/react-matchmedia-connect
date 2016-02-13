@@ -1,4 +1,4 @@
-import React, { createClass, PropTypes } from 'react';
+import React, { createClass } from 'react';
 import { createResponsiveConnect } from 'react-matchmedia-connect';
 
 const matchMediaConnect = createResponsiveConnect();
@@ -6,11 +6,6 @@ const matchMediaConnect = createResponsiveConnect();
 const App = createClass({
 
     displayName: 'App',
-
-    propTypes: {
-        // isXl: PropTypes.bool.isRequired,
-        // isLg: PropTypes.bool.isRequired
-    },
 
     render() {
         console.log('App.render');
@@ -38,4 +33,5 @@ const App = createClass({
     }
 });
 
-export default matchMediaConnect(App);
+
+export default matchMediaConnect()(App);
