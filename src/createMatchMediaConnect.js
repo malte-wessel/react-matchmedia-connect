@@ -61,7 +61,7 @@ export default function createMatchMediaConnect(queryMap = {}) {
         }
         return function wrapWithConnect(Component) {
             return createClass({
-                displayName: 'MatchMediaConnect',
+                displayName: 'ConnectMatchMedia',
                 getInitialState() {
                     return pickState(state);
                 },
