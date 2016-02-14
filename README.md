@@ -56,8 +56,12 @@ const connect = createResponsiveConnect({
   md: 992,
   lg: 1200
 });
-const Component = ({ isLandscapeTable }) => (
-  isLandscapeTable ? <div>Table</div>
+const Component = ({ isMinMd, isMaxMd }) => (
+  <div>
+    <div>{isMinMd ? 'greater than 992px' : 'less than 992px'}</div>
+    <div>{isMaxMd ? 'not greater than 1199px' : 'greater than 1199px'}</div>
+    <div>{isMinMd && isMaxMd ? 'between 992px and 1199px' : 'other'}</div>
+  </div>
 );
 // Only connect to `isMinMd` and `isMaxMd`
 const wrapWithConnect = connect(['isMinMd', 'isMaxMd']);
