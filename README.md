@@ -42,7 +42,7 @@ const ConnectedComponent = connect(['isLandscape', 'isMin400'])(Component);
 const OtherComponent = ({ isTablet }) => (
   isTablet ? <div>Tablet</div> : <div>No tablet</div>
 );
-// This component only needs `isLandscape` and `isMin400`
+// This component only needs `isTablet`
 const OtherConnectedComponent = connect(['isTablet'])(Component);
 
 ```
