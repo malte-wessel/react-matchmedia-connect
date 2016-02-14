@@ -8,7 +8,7 @@ react-matchmedia-connect
 * [Higher order components](https://medium.com/@dan_abramov/mixins-are-dead-long-live-higher-order-components-94a0d2f9e750#.9apqrmudz) for the [matchMedia](https://developer.mozilla.org/de/docs/Web/API/Window/matchMedia) API
 * Receive props that indicate whether your media queries match
 
-**[Examples](http://malte-wessel.github.io/react-matchmedia-connect/)**
+**[Demo](http://malte-wessel.github.io/react-matchmedia-connect/)**
 
 ## Installation
 ```bash
@@ -29,7 +29,9 @@ const connect = createMatchMediaConnect({
   isMin400: '(min-width: 400px)',
   isTablet: '(min-width: 700px), handheld and (orientation: landscape)'
 });
-
+```
+Then use this connect function throughout your app:
+```javascript
 const Component = ({ isLandscape, isMin400 }) => (
   <div>
     <div>{isLandscape ? 'landscape' : 'portrait'}</div>
@@ -38,7 +40,8 @@ const Component = ({ isLandscape, isMin400 }) => (
 );
 // This component only needs `isLandscape` and `isMin400`
 const ConnectedComponent = connect(['isLandscape', 'isMin400'])(Component);
-
+```
+```javascript
 const OtherComponent = ({ isTablet }) => (
   isTablet ? <div>Tablet</div> : <div>No tablet</div>
 );
@@ -48,6 +51,9 @@ const OtherConnectedComponent = connect(['isTablet'])(Component);
 ```
 
 ### createResponsiveConnect
+
+`createResponsiveConnect` expects a list of breakpoints and creates the respective media queries with `createMatchMediaConnect`. You'll get a `isMin<Size>` and `isMax<Size>` property for each breakpoint as well as a `isPortrait` and `isLandscape` property.
+
 ```javascript
 import { createResponsiveConnect } from 'react-matchmedia-connect';
 const connect = createResponsiveConnect({
@@ -56,6 +62,8 @@ const connect = createResponsiveConnect({
   md: 992,
   lg: 1200
 });
+```
+```javascript
 const Component = ({ isMinMd, isMaxMd }) => (
   <div>
     <div>{isMinMd ? 'greater than 992px' : 'less than 992px'}</div>
