@@ -5,7 +5,7 @@ react-matchmedia-connect
 [![npm version](https://img.shields.io/npm/v/react-matchmedia-connect.svg?style=flat-square)](https://www.npmjs.com/package/react-matchmedia-connect)
 [![npm downloads](https://img.shields.io/npm/dm/react-matchmedia-connect.svg?style=flat-square)](https://www.npmjs.com/package/react-matchmedia-connect)
 
-* Higher order components for `matchMedia`
+* [Higher order components](https://medium.com/@dan_abramov/mixins-are-dead-long-live-higher-order-components-94a0d2f9e750#.9apqrmudz) for the [matchMedia](https://developer.mozilla.org/de/docs/Web/API/Window/matchMedia) API
 * Receive props that indicate whether your media queries match
 
 **[Examples](http://malte-wessel.github.io/react-matchmedia-connect/)**
@@ -17,20 +17,34 @@ npm install react-matchmedia-connect --save
 
 ## Usage
 ### createMatchMediaConnect
+
+`createMatchMediaConnect` lets you register a set of [media queries](https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries).
+
 ```javascript
 import { createMatchMediaConnect } from 'react-matchmedia-connect';
+
+// Define some media queries and give them a key
 const connect = createMatchMediaConnect({
   isLandscape: '(orientation: landscape)',
-  isMin400: '(min-width: 400px)'
+  isMin400: '(min-width: 400px)',
+  isTablet: '(min-width: 700px), handheld and (orientation: landscape)'
 });
+
 const Component = ({ isLandscape, isMin400 }) => (
   <div>
     <div>{isLandscape ? 'landscape' : 'portrait'}</div>
     <div>{isMin400 ? 'at least 400' : 'less than 400'}</div>
   </div>
 );
-const wrapWithConnect = connect();
-const ConnectedComponent = wrapWithConnect(Component);
+// This component only needs `isLandscape` and `isMin400`
+const ConnectedComponent = connect(['isLandscape', 'isMin400'])(Component);
+
+const OtherComponent = ({ isTablet }) => (
+  isTablet ? <div>Tablet</div> : <div>No tablet</div>
+);
+// This component only needs `isLandscape` and `isMin400`
+const OtherConnectedComponent = connect(['isTablet'])(Component);
+
 ```
 
 ### createResponsiveConnect
@@ -42,12 +56,8 @@ const connect = createResponsiveConnect({
   md: 992,
   lg: 1200
 });
-const Component = ({ isMinMd, isMaxMd }) => (
-  <div>
-    <div>{isMinMd ? 'greater than 992px' : 'less than 992px'}</div>
-    <div>{isMaxMd ? 'not greater than 1199px' : 'greater than 1199px'}</div>
-    <div>{isMinMd && isMaxMd ? 'between 992px and 1199px' : 'other'}</div>
-  </div>
+const Component = ({ isLandscapeTable }) => (
+  isLandscapeTable ? <div>Table</div>
 );
 // Only connect to `isMinMd` and `isMaxMd`
 const wrapWithConnect = connect(['isMinMd', 'isMaxMd']);
