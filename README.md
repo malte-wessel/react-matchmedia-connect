@@ -79,7 +79,7 @@ const ConnectedComponent = wrapWithConnect(Component);
 ## API
 ### `createMatchMediaConnect(mediaQueries)`
 * `mediaQueries` (Object): A set of media queries.
-* `returns` (Function): `connect` function that connects your components to changes
+* `returns` (Function): **[connect](#connectproperties)** function that connects your components to changes
 
 ```javascript
 const connect = createMatchMediaConnect({
@@ -88,16 +88,16 @@ const connect = createMatchMediaConnect({
 });
 ```
 ##### `connect(properties)`
-  * `properties` (Array): An array of properties that your component should receive
-  * `returns` (Function): `wrapWithConnect` higher order function
+* `properties` (Array): An array of properties that your component should receive
+* `returns` (Function): **[wrapWithConnect](#wrapwithconnectcomponent)** higher order function
 
 ```javascript
 const wrapWithConnect = connect(['isMin400']);
 ```
 
 ##### `wrapWithConnect(Component)`
-  * `Component` (Component): The component that you want to connect
-  * `returns` (Component): Connected component
+* `Component` (Component): The component that you want to connect
+* `returns` (Component): Connected component
 
 ```javascript
 const Component = ({ isMin400 }) => (
@@ -107,7 +107,19 @@ const Component = ({ isMin400 }) => (
 const ConnectedComponent = wrapWithConnect(Component);
 ```
 
-### `createResponsiveConnect`
+### `createResponsiveConnect(breakpoints)`
+* `breakpoints` (Object): A set of breakpoints
+* `returns` (Function): **[connect](#connectproperties)** function that connects your components to changes
+
+*Default breakpoints:*
+```javascript
+const defaultBreakpoints = {
+  xs: 480,
+  sm: 768,
+  md: 992,
+  lg: 1200
+};
+```
 
 ## Examples
 
