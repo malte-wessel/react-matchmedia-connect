@@ -18,7 +18,7 @@ npm install react-matchmedia-connect --save
 ## Usage
 ### createMatchMediaConnect
 
-`createMatchMediaConnect` lets you register a set of [media queries](https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries). If one of the queries change, you component will be updated
+`createMatchMediaConnect` lets you register a set of [media queries](https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries). If one of the queries changes, you component will be updated.
 
 ```javascript
 import { createMatchMediaConnect } from 'react-matchmedia-connect';
