@@ -1,6 +1,6 @@
 {
   "name": "react-matchmedia-connect",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Higher order component for matchMedia",
   "main": "lib/index.js",
   "scripts": {
