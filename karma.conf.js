@@ -33,9 +33,9 @@ module.exports = function karmaConfig(config) {
                 }
             },
             module: {
-                loaders: [{
+                rules: [{
                     test: /\.js$/,
-                    loader: 'babel',
+                    loader: 'babel-loader',
                     exclude: /(node_modules)/
                 }].concat(coverageLoaders)
             }
