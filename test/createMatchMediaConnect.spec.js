@@ -1,6 +1,7 @@
-import React, { createClass } from 'react';
+import React from 'react';
+import createClass from 'create-react-class';
 import { render, unmountComponentAtNode } from 'react-dom';
-import { renderIntoDocument, findRenderedComponentWithType } from 'react-addons-test-utils';
+import { renderIntoDocument, findRenderedComponentWithType } from 'react-dom/test-utils';
 import { createMatchMediaConnect } from 'react-matchmedia-connect';
 const Component = createClass({ render: () => <div/> });
 

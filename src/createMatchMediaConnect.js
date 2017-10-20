@@ -1,4 +1,5 @@
-import React, { createClass } from 'react';
+import React from 'react';
+import createClass from 'create-react-class';
 import shallowEqual from './utils/shallowEqual';
 import throttle from './utils/throttle';
 import pick from './utils/pick';
