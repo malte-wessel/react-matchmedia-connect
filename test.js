@@ -1,8 +1,8 @@
 import expect from 'expect';
+import sinon from 'sinon';
+
 window.expect = expect;
-window.createSpy = expect.createSpy;
-window.spyOn = expect.spyOn;
-window.isSpy = expect.isSpy;
+window.sinon = sinon;
 
 const context = require.context('./test', true, /\.spec\.js$/);
 context.keys().forEach(context);

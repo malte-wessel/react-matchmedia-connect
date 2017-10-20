@@ -1,14 +1,12 @@
 {
     "globals": {
+        "sinon": true,
         "describe": true,
         "it": true,
         "expect": true,
         "before": true,
         "beforeEach": true,
         "after": true,
-        "afterEach": true,
-        "createSpy": true,
-        "spyOn": true,
-        "isSpy": true
+        "afterEach": true
     }
 }

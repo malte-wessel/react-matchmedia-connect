@@ -1,6 +1,7 @@
 /* eslint no-var: 0, no-unused-vars: 0 */
 var path = require('path');
 var webpack = require('webpack');
+
 var runCoverage = process.env.COVERAGE === 'true';
 
 var coverageLoaders = [];
@@ -10,7 +11,7 @@ if (runCoverage) {
     coverageLoaders.push({
         test: /\.js$/,
         include: path.resolve('src/'),
-        loader: 'isparta'
+        loader: 'isparta-loader'
     });
     coverageReporters.push('coverage');
 }
@@ -36,7 +37,10 @@ module.exports = function karmaConfig(config) {
                 rules: [{
                     test: /\.js$/,
                     loader: 'babel-loader',
-                    exclude: /(node_modules)/
+                    exclude: /(node_modules)/,
+                    options: {
+                        plugins: ['rewire']
+                    }
                 }].concat(coverageLoaders)
             }
         },
