@@ -1,14 +1,19 @@
-import React from 'react';
-import createClass from 'create-react-class';
-import shallowEqual from './utils/shallowEqual';
-import throttle from './utils/throttle';
-import pick from './utils/pick';
+import React, { Component } from 'react';
+import forEach from 'lodash.foreach';
+import pick from 'lodash.pick';
+import shallowEqual from 'shallowequal';
+import throttle from 'lodash.throttle';
+
+function pickState(pickProperties, stateToPickFrom) {
+    if (!pickProperties.length) return stateToPickFrom;
+    return pick(stateToPickFrom, ...pickProperties);
+}
 
 export default function createMatchMediaConnect(queryMap = {}, options = {}) {
     const { matchMediaFn = window.matchMedia } = options;
     const mqls = {};
     const listeners = [];
-    let state = {};
+    let internalState = {};
 
     function subscribe(listener) {
         listeners.push(listener);
@@ -20,70 +25,64 @@ export default function createMatchMediaConnect(queryMap = {}, options = {}) {
 
     function createState() {
         const nextState = {};
-        for (const key in mqls) {
-            if (!mqls.hasOwnProperty(key)) continue;
-            const mql = mqls[key];
+        forEach(mqls, (mql, key) => {
             const { matches } = mql;
             nextState[key] = matches;
-        }
+        });
         return nextState;
     }
 
     const handleChange = throttle(() => {
         const nextState = createState();
-        if (shallowEqual(state, nextState)) return;
-        state = nextState;
-        listeners.forEach(listener => listener(nextState));
+        if (shallowEqual(internalState, nextState)) return;
+        internalState = nextState;
+        forEach(listeners, listener => listener(nextState));
     });
 
     if (matchMediaFn) {
-        for (const key in queryMap) {
-            if (!queryMap.hasOwnProperty(key)) continue;
-            const query = queryMap[key];
+        forEach(queryMap, (query, key) => {
             const mql = matchMediaFn(query);
             mql.addListener(handleChange);
             mqls[key] = mql;
-        }
+        });
     }
 
     function destroy() {
         listeners.length = 0;
-        for (const key in mqls) {
-            if (!mqls.hasOwnProperty(key)) continue;
-            const mql = mqls[key];
+
+        forEach(mqls, (mql, key) => {
             mql.removeListener(handleChange);
-            mqls[key] = undefined;
-        }
+            delete mqls[key];
+        });
     }
 
-    state = createState();
+    internalState = createState();
+
 
     function connect(pickProperties = []) {
-        function pickState(stateToPickFrom) {
-            if (!pickProperties.length) return stateToPickFrom;
-            return pick(stateToPickFrom, ...pickProperties);
-        }
-        return function wrapWithConnect(Component) {
-            return createClass({
-                displayName: 'ConnectMatchMedia',
-                getInitialState() {
-                    return pickState(state);
-                },
+        return function wrapWithConnect(WrappedComponent) {
+            return class WrapWithConnect extends Component {
+                constructor(props) {
+                    super(props);
+                    this.state = pickState(pickProperties, internalState);
+                }
                 componentDidMount() {
                     this.unsubscribe = subscribe(this.handleChange);
-                },
+                }
                 componentWillUnmount() {
                     this.unsubscribe();
-                },
-                handleChange(nextState) {
-                    const nextPickedState = pickState(nextState);
-                    if (shallowEqual(this.state, nextPickedState)) return;
-                    this.setState(nextPickedState);
-                },
-                render() {
-                    return <Component {...this.props} {...this.state}/>;
                 }
-            });
+                handleChange = (nextState) => {
+                    const nextPickedState = pickState(pickProperties, nextState);
+
+
+                    if (shallowEqual(this.state, nextPickedState)) { return; }
+                    this.setState(nextPickedState);
+                }
+                render() {
+                    return <WrappedComponent {...this.props} {...this.state} />;
+                }
+            };
         };
     }
 
