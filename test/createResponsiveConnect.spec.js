@@ -1,13 +1,17 @@
-import { createResponsiveConnect } from 'react-matchmedia-connect';
-const createMatchMediaConnect = require('../src/createMatchMediaConnect');
+/* eslint-disable no-underscore-dangle */
+import createMatchMediaConnect from '../src/createMatchMediaConnect';
+import createResponsiveConnect, {
+    __RewireAPI__ as RewireAPI
+} from '../src/createResponsiveConnect';
 
 describe('createResponsiveConnect', () => {
     describe('when creating', () => {
-        it('should use default breakpoint', done => {
-            const spy = spyOn(createMatchMediaConnect, 'default');
+        it('should use default breakpoint', (done) => {
+            const spy = sinon.spy(createMatchMediaConnect);
+            RewireAPI.__Rewire__('createMatchMediaConnect', spy);
             createResponsiveConnect();
-            expect(spy.calls.length).toEqual(1);
-            expect(spy.calls[0].arguments[0]).toEqual({
+            expect(spy.callCount).toEqual(1);
+            expect(spy.firstCall.args[0]).toEqual({
                 isLandscape: '(orientation: landscape)',
                 isPortrait: '(orientation: portrait)',
                 isMaxXs: '(max-width: 767px)',
@@ -17,20 +21,22 @@ describe('createResponsiveConnect', () => {
                 isMaxMd: '(max-width: 1199px)',
                 isMinLg: '(min-width: 1200px)'
             });
-            spy.restore();
+            spy.reset();
+            RewireAPI.__ResetDependency__('createMatchMediaConnect');
             done();
         });
     });
     describe('when using custom breakpoints', () => {
-        it('should create custom media queries', done => {
-            const spy = spyOn(createMatchMediaConnect, 'default');
+        it('should create custom media queries', (done) => {
+            const spy = sinon.spy(createMatchMediaConnect);
+            RewireAPI.__Rewire__('createMatchMediaConnect', spy);
             createResponsiveConnect({
                 small: 100,
                 medium: 200,
                 large: 300
             });
-            expect(spy.calls.length).toEqual(1);
-            expect(spy.calls[0].arguments[0]).toEqual({
+            expect(spy.callCount).toEqual(1);
+            expect(spy.firstCall.args[0]).toEqual({
                 isLandscape: '(orientation: landscape)',
                 isPortrait: '(orientation: portrait)',
                 isMaxSmall: '(max-width: 199px)',
@@ -38,7 +44,8 @@ describe('createResponsiveConnect', () => {
                 isMaxMedium: '(max-width: 299px)',
                 isMinLarge: '(min-width: 300px)'
             });
-            spy.restore();
+            spy.reset();
+            RewireAPI.__ResetDependency__('createMatchMediaConnect');
             done();
         });
     });

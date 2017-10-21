@@ -1,5 +1,6 @@
+import capitalize from 'lodash.capitalize';
+import forEach from 'lodash.foreach';
 import createMatchMediaConnect from './createMatchMediaConnect';
-import capitalize from './utils/capitalize';
 
 const defaultBreakpoints = {
     xs: 480,
@@ -15,11 +16,9 @@ export default function createResponsiveConnect(breakpoints = defaultBreakpoints
         isPortrait: '(orientation: portrait)'
     };
 
-    for (const key in breakpoints) {
-        if (!breakpoints.hasOwnProperty(key)) continue;
-        const value = breakpoints[key];
+    forEach(breakpoints, (value, key) => {
         breakpointsList.push({ key, value });
-    }
+    });
 
     // Make sure breakpoints are ordered by value ASC
     breakpointsList.sort(({ value: a }, { value: b }) => a - b);
