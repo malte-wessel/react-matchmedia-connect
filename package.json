@@ -33,10 +33,6 @@
   },
   "homepage": "https://github.com/malte-wessel/react-matchmedia-connect",
   "dependencies": {
-    "lodash.capitalize": "^4.2.1",
-    "lodash.foreach": "^4.5.0",
-    "lodash.pick": "^4.4.0",
-    "lodash.throttle": "^4.1.1",
     "shallowequal": "^1.0.2"
   },
   "devDependencies": {

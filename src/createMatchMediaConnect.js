@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import forEach from 'lodash.foreach';
-import pick from 'lodash.pick';
 import shallowEqual from 'shallowequal';
-import throttle from 'lodash.throttle';
+import throttle from './utils/throttle';
+import pick from './utils/pick';
 
 function pickState(pickProperties, stateToPickFrom) {
     if (!pickProperties.length) return stateToPickFrom;
@@ -13,7 +12,7 @@ export default function createMatchMediaConnect(queryMap = {}, options = {}) {
     const { matchMediaFn = window.matchMedia } = options;
     const mqls = {};
     const listeners = [];
-    let internalState = {};
+    let state = {};
 
     function subscribe(listener) {
         listeners.push(listener);
@@ -25,46 +24,55 @@ export default function createMatchMediaConnect(queryMap = {}, options = {}) {
 
     function createState() {
         const nextState = {};
-        forEach(mqls, (mql, key) => {
+        for (const key in mqls) {
+            if (!mqls.hasOwnProperty(key)) continue;
+            const mql = mqls[key];
             const { matches } = mql;
             nextState[key] = matches;
-        });
+        }
         return nextState;
     }
 
     const handleChange = throttle(() => {
         const nextState = createState();
-        if (shallowEqual(internalState, nextState)) return;
-        internalState = nextState;
-        forEach(listeners, listener => listener(nextState));
+        if (shallowEqual(state, nextState)) return;
+        state = nextState;
+        for (let i = 0, l = listeners.length; i < l; i++) {
+            const listener = listeners[i];
+            if (!listener) continue;
+            listener(nextState);
+        }
     });
 
     if (matchMediaFn) {
-        forEach(queryMap, (query, key) => {
+        for (const key in queryMap) {
+            if (!queryMap.hasOwnProperty(key)) continue;
+            const query = queryMap[key];
             const mql = matchMediaFn(query);
             mql.addListener(handleChange);
             mqls[key] = mql;
-        });
+        }
     }
 
     function destroy() {
         listeners.length = 0;
-
-        forEach(mqls, (mql, key) => {
+        for (const key in mqls) {
+            if (!mqls.hasOwnProperty(key)) continue;
+            const mql = mqls[key];
             mql.removeListener(handleChange);
-            delete mqls[key];
-        });
+            mqls[key] = undefined;
+        }
     }
 
-    internalState = createState();
-
+    state = createState();
 
     function connect(pickProperties = []) {
         return function wrapWithConnect(WrappedComponent) {
             return class WrapWithConnect extends Component {
                 constructor(props) {
                     super(props);
-                    this.state = pickState(pickProperties, internalState);
+                    this.handleChange = this.handleChange.bind(this);
+                    this.state = pickState(pickProperties, state);
                 }
                 componentDidMount() {
                     this.unsubscribe = subscribe(this.handleChange);
@@ -72,11 +80,15 @@ export default function createMatchMediaConnect(queryMap = {}, options = {}) {
                 componentWillUnmount() {
                     this.unsubscribe();
                 }
-                handleChange = (nextState) => {
-                    const nextPickedState = pickState(pickProperties, nextState);
+                handleChange(nextState) {
+                    const nextPickedState = pickState(
+                        pickProperties,
+                        nextState
+                    );
 
-
-                    if (shallowEqual(this.state, nextPickedState)) { return; }
+                    if (shallowEqual(this.state, nextPickedState)) {
+                        return;
+                    }
                     this.setState(nextPickedState);
                 }
                 render() {
